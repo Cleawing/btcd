@@ -18,6 +18,7 @@ import (
 
 	"github.com/btcsuite/btcd/database"
 	_ "github.com/btcsuite/btcd/database/ldb"
+	_ "./database/cassandra"
 	_ "github.com/btcsuite/btcd/database/memdb"
 	"github.com/btcsuite/btcd/wire"
 	"github.com/btcsuite/btcutil"

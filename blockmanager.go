@@ -1551,15 +1551,26 @@ func warnMultipeDBs() {
 // the file system and ensuring the regression test database is clean when in
 // regression test mode.
 func setupBlockDB() (database.Db, error) {
-	// The memdb backend does not have a file path associated with it, so
-	// handle it uniquely.  We also don't want to worry about the multiple
-	// database type warnings when running with the memory database.
+	var (
+		db database.Db = nil
+		err error = nil
+	)
+	// The memdb and Cassandra backends does not have a file path associated with it, so
+	// handle it uniquely. We also don't want to worry about the multiple
+	// database type warnings when running with the memory database or Cassandra cluster.
 	if cfg.DbType == "memdb" {
 		btcdLog.Infof("Creating block database in memory.")
-		db, err := database.CreateDB(cfg.DbType)
-		if err != nil {
-			return nil, err
-		}
+		db, err = database.CreateDB(cfg.DbType)
+	} else if cfg.DbType == "cassandra" {
+		btcdLog.Infof("Connecting to Cassandra cluster.")
+		db, err = database.CreateDB(cfg.DbType)
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	if db != nil {
 		return db, nil
 	}
 
@@ -1573,7 +1584,7 @@ func setupBlockDB() (database.Db, error) {
 	removeRegressionDB(dbPath)
 
 	btcdLog.Infof("Loading block database from '%s'", dbPath)
-	db, err := database.OpenDB(cfg.DbType, dbPath)
+	db, err = database.OpenDB(cfg.DbType, dbPath)
 	if err != nil {
 		// Return the error if it's not because the database
 		// doesn't exist.
