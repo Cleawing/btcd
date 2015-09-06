@@ -1563,7 +1563,7 @@ func setupBlockDB() (database.Db, error) {
 		db, err = database.CreateDB(cfg.DbType)
 	} else if cfg.DbType == "cassandra" {
 		btcdLog.Infof("Connecting to Cassandra cluster.")
-		db, err = database.CreateDB(cfg.DbType)
+		db, err = database.OpenDB(cfg.DbType)
 	}
 
 	if err != nil {

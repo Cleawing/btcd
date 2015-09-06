@@ -3,10 +3,11 @@ import (
 	"github.com/btcsuite/btcd/database"
 	"github.com/btcsuite/btcd/wire"
 	"github.com/btcsuite/btcutil"
+	"github.com/hailocab/gocassa"
 )
 
 type Cassandra struct {
-
+	keySpace gocassa.KeySpace
 }
 
 func (db *Cassandra) Close() error {
